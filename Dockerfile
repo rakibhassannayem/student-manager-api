@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     && docker-php-ext-install intl pdo_pgsql \
-    && a2enmod rewrite
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -18,11 +19,10 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 RUN chown -R www-data:www-data tmp logs
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/webroot
+RUN sed -i 's!/var/www/html!/var/www/html/webroot!g' \
+    /etc/apache2/sites-available/000-default.conf
 
-RUN sed -ri \
-    -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/*.conf \
+RUN sed -i 's!/var/www/!/var/www/html/webroot!g' \
     /etc/apache2/apache2.conf
 
 EXPOSE 80
