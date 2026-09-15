@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -50,29 +51,27 @@ use function Cake\Core\env;
 /*
  * Load global functions for collections, translations, debugging etc.
  */
+
 require CAKE . 'functions.php';
 
 /*
- * See https://github.com/josegonzalez/php-dotenv for API details.
- *
- * Uncomment block of code below if you want to use `.env` file during development.
- * You should copy `config/.env.example` to `config/.env` and set/modify the
- * variables as required.
- *
- * The purpose of the .env file is to emulate the presence of the environment
- * variables like they would be present in production.
- *
- * If you use .env files, be careful to not commit them to source control to avoid
- * security risks. See https://github.com/josegonzalez/php-dotenv#general-security-information
- * for more information for recommended practices.
-*/
-// if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
-//     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
-//     $dotenv->parse()
-//         ->putenv()
-//         ->toEnv()
-//         ->toServer();
-// }
+ * Load environment variables from the project root during development.
+ * Keep credentials in the environment and out of application configuration.
+ */
+if (!env('APP_NAME')) {
+    $envFile = ROOT . DS . '.env';
+    if (!file_exists($envFile)) {
+        $envFile = CONFIG . '.env';
+    }
+
+    if (file_exists($envFile)) {
+        $dotenv = new \josegonzalez\Dotenv\Loader([$envFile]);
+        $dotenv->parse()
+            ->putenv()
+            ->toEnv()
+            ->toServer();
+    }
+}
 
 /*
  * Initializes default Config store and loads the main configuration file (app.php)
