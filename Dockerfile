@@ -34,4 +34,6 @@ RUN printf '%s\n' \
 RUN mkdir -p tmp logs \
     && chown -R www-data:www-data tmp logs
 
+RUN apache2ctl -M 2>&1 | grep mpm
+
 EXPOSE 80
