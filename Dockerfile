@@ -31,6 +31,7 @@ RUN printf '%s\n' \
 && a2dissite 000-default.conf \
 && a2ensite cakephp.conf
 
-RUN chown -R www-data:www-data tmp logs
+RUN mkdir -p tmp logs \
+    && chown -R www-data:www-data tmp logs
 
 EXPOSE 80
