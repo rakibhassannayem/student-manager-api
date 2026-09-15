@@ -35,4 +35,9 @@ RUN printf '%s\n' \
 RUN mkdir -p tmp logs \
     && chown -R www-data:www-data tmp logs
 
+RUN echo "=== APACHE MPM CONFIG ===" \
+    && grep -R "LoadModule mpm_" /etc/apache2/ \
+    && echo "=== ENABLED MPM MODULES ===" \
+    && ls -la /etc/apache2/mods-enabled/ | grep mpm
+
 EXPOSE 80
